@@ -1,0 +1,16 @@
+# Version of docker compose
+version: '3'
+
+services:
+  db: 
+    # Postgres predefined image
+    image: postgres
+  web:
+    # Using our dockerfile
+    build: .
+    # Connecting my development machine to the container
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8000:8000"
+
