@@ -1,0 +1,10 @@
+{% extends "users/layout.html" %}
+
+{% body block %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Register</button>
+    </form>
+{% endblock %}
+

@@ -1,0 +1,15 @@
+<!-- Basic html -->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>Airpoo</title>
+        <link rel="icon" href="{{ url_for('static', filename='airpoo_logo.ico') }}" type="image/x-icon">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+    </head>
+    <table>
+        {% body block %}
+        {% endblock %}
+    </table>
+</html>
