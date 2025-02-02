@@ -1,3 +1,4 @@
+# Importing the necessary libraries
 from django.test import TestCase, Client
 from selenium import webdriver
 import os

@@ -1,10 +1,11 @@
-# Version of docker compose
-version: '3'
-
 services:
   db: 
     # Postgres predefined image
     image: postgres
+    environment:
+      - POSTGRES_PASSWORD=@Harmon|Health2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  
   web:
     # Using our dockerfile
     build: .
@@ -13,4 +14,8 @@ services:
       - .:/usr/src/app
     ports:
       - "8000:8000"
+    depends_on:
+      - db
 
+volumes:
+  postgres_data:

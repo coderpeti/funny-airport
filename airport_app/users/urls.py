@@ -1,13 +1,15 @@
 # Defining links
+# Importing the necessary libraries
 from django.urls import path
 from . import views
 
+# Defining the name of the app, with which we provide easier access to the links
 app_name = 'users'
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("authentication/<str:register_login>/", views.authentication, name="authentication"),
-    path("logout/", views.logout, name="logout"),
+    path("authentication/<str:register_login>/", views.user_authentication, name="authentication"),
+    path("logout/", views.user_logout, name="logout"),
     path("special-offers/", views.special_offers, name="special_offers"),
     path("tickets/", views.tickets, name="tickets"),
     path("my-tickets/", views.my_tickets, name="my_tickets"),

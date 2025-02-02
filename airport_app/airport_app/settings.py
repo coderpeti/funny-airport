@@ -32,8 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     # Importing our apps
-    'users'
-    'workers'
+    'users',
+    'workers',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

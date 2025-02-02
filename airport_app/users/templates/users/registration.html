@@ -1,6 +1,7 @@
 {% extends "users/layout.html" %}
 
-{% body block %}
+{% block body %}
+    <!-- Form of registration --> 
     <form method="post">
         {% csrf_token %}
         {{ form }}

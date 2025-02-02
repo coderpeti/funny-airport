@@ -1,3 +1,4 @@
+# Importing the necessary libraries
 from django import forms
 from django.contrib.auth.models import User
 
@@ -10,7 +11,7 @@ class RegistrationForm(forms.ModelForm):
     # Entering metadata
     class Meta:
         # Use of user model
-        model: User
+        model = User
         # Setting basic fields other than the password
         fields = ["username", "email"]
 
