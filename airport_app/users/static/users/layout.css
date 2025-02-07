@@ -1,0 +1,85 @@
+/* Styles valid everywhere */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Setting the font for the page */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Header style defaults */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #333;
+    color: white;
+    font-style: italic;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Configure logo style */
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-style: italic;
+    color: #dd0000;
+}
+
+/* Navigation menu default style settings */
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+/* Style of header links */
+.header_link {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+
+/* Style of header links on mouseover */
+.header_link:hover {
+    text-decoration: none;
+    transform: scale(1.1);
+}
+
+/* Profile button style */
+#profile_image {
+    border-radius: 50%; 
+    width: 30px; 
+    height: 30px;
+}
+
+/* Responsive settings */
+@media (max-width: 599px) {
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    nav ul {
+        gap: 15px;
+    }
+    
+    .header_link {
+        font-size: 0.8rem;
+    }
+
+    .header_link:hover {
+        transform: scale(1.05);
+    }
+
+    #profile_image {
+        border-radius: 100%; 
+        width: 25px; 
+        height: 25px;
+    }
+}

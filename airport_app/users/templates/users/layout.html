@@ -9,24 +9,28 @@
         <!-- Enter address -->
         <title>AirPolet</title>
         <!-- Define basic stylesheet --> 
-        <link rel="stylesheet" href="{% static 'users/header.css' %}"> 
+        <link rel="stylesheet" href="{% static 'users/layout.css' %}"> 
+        <!-- Icon setting -->
         <link rel="icon" href="{% static 'users/airpoo_logo.ico' %}" type="image/x-icon">
         <meta name="viewport" content="initial-scale=1, width=device-width">
     </head>
 
     <body>
+        <!-- Header setting -->
         <header>
             <div class="logo">AirPolet</div>
             <nav>
                 <ul>
-                    <li><a>Home Page</a></li>
-                    <li><a>Tickets</a></li>
-                    <li><a>Contact</a></li>
-                    <li><a>Profile</a></li>
+                    <li><a class="header_link">Home Page</a></li>
+                    <li><a class="header_link">Tickets</a></li>
+                    <li><a class="header_link">Contact</a></li>                   
                 </ul>
             </nav>
+            <a class="header_link">
+                <img id="profile_image" src="{% static 'users/profile.png' %}" alt="Profile">
+            </a>
         </header>
-
+        
         {% block body %}
         {% endblock %}
     </body>
