@@ -21,18 +21,23 @@
             <div class="logo">AirPolet</div>
             <nav>
                 <ul>
-                    <li><a class="header_link">Home Page</a></li>
-                    <li><a class="header_link">Tickets</a></li>
-                    <li><a class="header_link">Contact</a></li>                   
+                    <li><a class="header-link" href="#">Home Page</a></li>
+                    <li><a class="header-link" href="#">Tickets</a></li>
+                    <li><a class="header-link" href="#">Special Offers</a></li>                   
                 </ul>
             </nav>
-            <a class="header_link">
-                <img id="profile_image" src="{% static 'users/profile.png' %}" alt="Profile">
+            <a class="header-link" href="#">
+                <img id="profile-image" src="{% static 'users/profile.png' %}" alt="Profile">
             </a>
         </header>
         
         {% block body %}
         {% endblock %}
+
+        <!-- Footer setting -->
+        <footer>
+            <p>&copy; 2025 Web Application - All rights reserved.</p>
+        </footer>
     </body>
 
 </html>

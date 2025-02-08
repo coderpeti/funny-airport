@@ -10,6 +10,8 @@ body {
     font-family: Arial, sans-serif;
 }
 
+
+/* Header */
 /* Header style defaults */
 header {
     display: flex;
@@ -38,7 +40,7 @@ nav ul {
 }
 
 /* Style of header links */
-.header_link {
+.header-link {
     color: white;
     text-decoration: none;
     font-size: 1rem;
@@ -47,16 +49,24 @@ nav ul {
 }
 
 /* Style of header links on mouseover */
-.header_link:hover {
+.header-link:hover {
     text-decoration: none;
     transform: scale(1.1);
 }
 
 /* Profile button style */
-#profile_image {
-    border-radius: 50%; 
+#profile-image {
+    border-radius: 100%; 
     width: 30px; 
     height: 30px;
+}
+
+/* Footer style */
+footer {
+    font-size: 1rem;
+    font-style: italic;
+    color: #333;
+    text-align: center;
 }
 
 /* Responsive settings */
@@ -69,17 +79,24 @@ nav ul {
         gap: 15px;
     }
     
-    .header_link {
+    .header-link {
         font-size: 0.8rem;
     }
 
-    .header_link:hover {
+    .header-link:hover {
         transform: scale(1.05);
     }
 
-    #profile_image {
+    #profile-image {
         border-radius: 100%; 
         width: 25px; 
         height: 25px;
+    }
+
+    footer {
+        font-size: 0.8rem;
+        font-style: italic;
+        color: #333;
+        text-align: center;
     }
 }
