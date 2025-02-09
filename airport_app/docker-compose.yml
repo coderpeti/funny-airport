@@ -1,9 +1,11 @@
 services:
   db: 
     # Postgres predefined image
-    image: postgres
+    image: postgres:latest
     environment:
-      - POSTGRES_PASSWORD=@Harmon|Health2024
+      - POSTGRES_PASSWORD=@HarmonHealth
+      - POSTGRES_USER=peter_coder    
+      - POSTGRES_DB=Airport_database
     volumes:
       - postgres_data:/var/lib/postgresql/data  
   web:
