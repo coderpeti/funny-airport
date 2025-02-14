@@ -1,0 +1,36 @@
+<!-- Importing the basic template -->
+{% extends "users/layout.html" %}
+<!-- Load static files -->
+{% load static %}
+
+{% block body %}
+    <!-- Form div -->
+    <div class="form-container">
+        <div class="form-toggle">
+            <!-- If reg, the toggle register will be active -->
+            {% if reg_or_log == "reg" %}
+                <button id="toggle-register" class="btn-toggle active" onclick="loadForm('registration-login')">Register</button>
+                <button id="toggle-login" class="btn-toggle" onclick="loadForm('login-registration')">Login</button>
+            <!-- If log, the toggle login will be active -->
+            {% elif reg_or_log == "log" %}
+                <button id="toggle-register" class="btn-toggle" onclick="loadForm('registration-login')">Register</button>
+                <button id="toggle-login" class="btn-toggle active" onclick="loadForm('login-registration')">Login</button>
+            {% endif %}
+        </div>
+
+        <div id="form-container">
+            <!-- If reg, loading the registration form by default -->
+            {% if reg_or_log == "reg" %}
+                {% include 'users/registration.html' %}
+            <!-- If log, loading the login form by default -->
+            {% elif reg_or_log == "log" %}
+                {% include 'users/login.html' %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'users/css/auth.css' %}">
+    <!-- Javascript setting -->
+    <script src="{% static 'users/js/auth.js' %}"></script>
+{% endblock %}

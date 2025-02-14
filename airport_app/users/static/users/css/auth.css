@@ -1,0 +1,54 @@
+/* Form container */
+.form-container {
+    text-align: center;
+    width: 350px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+/* Toggle buttons */
+.form-toggle {
+    display: flex;
+}
+
+.btn-toggle {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    background: #f5f5f5;
+    color: #333;
+}
+
+.btn-toggle.active {
+    background: #d9534f;
+    color: white;  
+}
+
+/* Form styles */
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+input {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+button {
+    background-color: #d9534f;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    background-color: #c9302c
+}

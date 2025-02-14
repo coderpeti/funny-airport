@@ -58,7 +58,9 @@ ROOT_URLCONF = 'airport_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,7 +86,10 @@ DATABASES = {
         'USER': 'peter_coder',
         'PASSWORD': '@HarmonHealth',
         'HOST': 'db',
-        'PORT': '5432'
+        'PORT': '5432',
+        'OPTIONS': {
+            'client_encoding': 'UTF8',  
+        },
     }
 }
 

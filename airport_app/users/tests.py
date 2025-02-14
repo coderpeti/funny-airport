@@ -5,12 +5,20 @@ import os
 import pathlib
 from .models import Airport, Flight, Passenger
 
+# Get the file's uniform resource identifier
+def file_uri(filename):
+    return pathlib.Path(os.path.abspath(filename)).as_uri()
+
+# Setting the default browser for testing
+driver = webdriver.Chrome
+
 # Create your tests here.
 class UserTestCase(TestCase):
+    # Create test data
     def setUp(self):
         a1 = Airport.objects.create(city="City A", code="AAA")
         a2 = Airport.objects.create(city="City B", code="BBB")
-
+        
         Flight.objects.create(origin=a1, destination=a2, duration=100)
         Flight.objects.create(origin=a1, destination=a1, duration=100)
 

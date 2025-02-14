@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 
+# Creating a registration form
 class RegistrationForm(forms.ModelForm):
     # Entering a password
     password1 = forms.CharField(widget=forms.PasswordInput, label="Password")
@@ -23,3 +24,11 @@ class RegistrationForm(forms.ModelForm):
         if password1 != password2:
             raise forms.ValidationError("The Two Passwords Do Not Match")
         return password2
+    
+
+# Creating a login form
+class LoginForm(forms.Form):
+    # Entering a password and a username
+    username = forms.CharField(label="Username")
+    password = forms.CharField(widget=forms.PasswordInput, label="Password")
+
