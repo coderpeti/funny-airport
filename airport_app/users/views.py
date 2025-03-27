@@ -2,16 +2,75 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, BookingForm
 from django.urls import reverse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
+from .models import Airport, Flight
+import re
 
 # Create your views here.
+# Helper functions
+def render_with_results_form(request, form, results=None):
+    return render(request, "users/index.html", {"form": form, "results": results})
 
 # Home Page
 def index(request):
-    pass
+    
+    # If POST is the request method
+    if request.method == "POST":
+        form = BookingForm(request.POST)
+        
+        # If the form is valid
+        if form.is_valid():
+            # Retrieve data
+            origin_name = re.search(r'\((.*?)\)', form.cleaned_data["origin"])
+            destination_name = re.search(r'\((.*?)\)', form.cleaned_data["destination"])
+            passengers = form.cleaned_data["passengers"]
+
+            try:
+                # Find airports by city
+                origin_airport = Airport.objects.get(code=origin_name.group(1))
+                destination_airport = Airport.objects.get(code=destination_name.group(1))
+                # Search in the Flight model
+                flights = Flight.objects.filter(origin=origin_airport, destination=destination_airport)
+                results =  [f"ORIGIN: {flight.origin.city} ({flight.origin.code}) DESTINATION: {flight.destination.city} ({flight.destination.code}) DURATION: {flight.duration}" for flight in flights]
+                
+                # Check if there is a match
+                if not flights.exists():
+                    return render_with_results_form(request, BookingForm(), f"Unfortunately, there are no available flights between {origin_name.group(1)} and {destination_name.group(1)}")
+                # If there is a match, return the results
+                
+                return render_with_results_form(request, BookingForm(), results)
+            
+            except Airport.DoesNotExist:
+                return HttpResponse("Error: One of the airports does not exist.", status=400)
+                
+    else:
+        form = BookingForm()
+
+    # Load form
+    return render(request, "users/index.html", {"form":form})
+
+
+# Search Airports
+def search_airports(request):
+
+    # Checking the header of the django request object
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest': 
+        # Retrieve the query
+        query = request.GET.get("query", "") 
+
+        if query == "":
+            return JsonResponse([], safe=False) 
+
+        # Selecting airports that contain the query
+        airports = Airport.objects.filter(city__icontains=query).values("city", "code")
+        airports_list = [f"{airport["city"]} ({airport["code"]})" for airport in airports]
+        # Return JSON as a file that allows the list
+        return JsonResponse(airports_list, safe=False)
+    
+    return JsonResponse([], safe=False)  
 
 
 # Registration and Login Page
@@ -84,7 +143,7 @@ def user_authentication(request, register_login):
 
 # Profile Page
 def user_profile(request):
-    pass
+    return render(request, "users/user_profile.html")
 
 
 # Logout Page
@@ -94,11 +153,6 @@ def user_logout(request):
 
 # To Browse Special Offers Page
 def special_offers(request):
-    pass
-
-
-# Ticket Purchase Page
-def tickets(request):
     pass
 
 

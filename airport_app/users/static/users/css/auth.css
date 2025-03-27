@@ -1,6 +1,5 @@
 /* Form container */
 .form-container {
-    text-align: center;
     width: 350px;
     margin: 50px auto;
     padding: 20px;
@@ -8,6 +7,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background: white;
+    font-style: italic;
 }
 
 /* Toggle buttons */
@@ -18,10 +18,13 @@
 .btn-toggle {
     flex: 1;
     padding: 10px;
+    margin: 0 0 15px;
     border: none;
+    border-radius: 0;
     cursor: pointer;
     background: #f5f5f5;
     color: #333;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
 .btn-toggle.active {
@@ -33,13 +36,14 @@
 input, button {
     width: 100%;
     padding: 10px;
-    margin-top: 10px;
     border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 input {
     background-color: #f5f5f5;
     color: #333;
+    margin: 0 0 5px;
 }
 
 button {
@@ -47,8 +51,25 @@ button {
     color: white;
     cursor: pointer;
     border: none;
+    margin-top: 15px;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+.btn-toggle:hover{
+    background-color: #eaeaea
+}
+
+.btn-toggle.active:hover {
+    background: #d9534f;
 }
 
 button:hover {
-    background-color: #c9302c
+    background-color: #cc4c48
+}
+
+input:focus {
+    outline: none;
+    border-color: #d9534f;
+    box-shadow: 0 0 5px rgba(217, 83, 79, 0.5);
 }

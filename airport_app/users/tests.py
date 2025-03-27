@@ -1,5 +1,6 @@
 # Importing the necessary libraries
 from django.test import TestCase, Client
+from django.urls import reverse
 from selenium import webdriver
 import os
 import pathlib
@@ -13,7 +14,7 @@ def file_uri(filename):
 driver = webdriver.Chrome
 
 # Create your tests here.
-class UserTestCase(TestCase):
+class BasicTestCase(TestCase):
     # Create test data
     def setUp(self):
         a1 = Airport.objects.create(city="City A", code="AAA")
@@ -36,5 +37,20 @@ class UserTestCase(TestCase):
         c = Client()
         response = c.get("/")
         self.assertEqual(response.status_code, 200)
+
+
+class SearchAirportTestcase(TestCase):
+    def setUp(self):
+        self.airport = Airport.objects.create(city="Budapest", code="BUD")
+        
+    def test_search_airports_valid(self):
+        c = Client()
+        url = reverse("users:search_airports")
+        response = c.get(url, {"query": "Budapest"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json, [])
+    
+
+    
 
     

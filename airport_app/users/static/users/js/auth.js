@@ -16,10 +16,10 @@ document.addEventListener("DOMContentLoaded", function() {
             document.querySelector("#form-container").innerHTML = data.html;
             
             const form = document.querySelector("form")
-            if (formType == "registration") {
+            if (formType == "registration-login") {
                 // Setting the action of the form to its own url
                 form.action = "/users/authentication/registration/";
-            } else if (formType = "login") {
+            } else if (formType == "login-registration") {
                 // Setting the action of the form to its own url
                 form.action = "/users/authentication/login/"
             }

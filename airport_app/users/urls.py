@@ -8,11 +8,11 @@ app_name = 'users'
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("search-airports/", views.search_airports, name="search_airports"),
     path("authentication/<str:register_login>/", views.user_authentication, name="authentication"),
     path("profile/", views.user_profile, name="profile"),
     path("logout/", views.user_logout, name="logout"),
     path("special-offers/", views.special_offers, name="special_offers"),
-    path("tickets/", views.tickets, name="tickets"),
     path("my-tickets/", views.my_tickets, name="my_tickets"),
     path("checkout/", views.checkout, name="checkout"),
     path("purchase/", views.purchase, name="purchase")

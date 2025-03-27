@@ -1,5 +1,6 @@
 # Importing the necessary libraries
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 
@@ -7,7 +8,7 @@ from django.db import models
 # The class to define airports
 class Airport(models.Model):
     city = models.CharField(max_length=64)
-    code = models.CharField(max_length=3)
+    code = models.CharField(max_length=3, unique=True)
 
     # Return an easy-to-read format from the object
     def __str__(self):
@@ -18,27 +19,34 @@ class Airport(models.Model):
 class Flight(models.Model):
     origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="departures") 
     destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="arrivals")
-    duration = models.IntegerField()
+    duration = models.IntegerField(validators=[MinValueValidator(1)])
 
     # Defining a flight validation function
     def is_valid_flight(self):
-        if self.origin == self.destination or self.duration < 0:
-            return False
-        else:
-            return True
+        return self.origin != self.destination
     
     # Return an easy-to-read format from the object
     def __str__(self):
         return f"Origin: {self.origin} | Destination: {self.destination} | Duration: {self.duration}"
 
 
-# The class to define passengers
-class Passenger(models.Model):
-    first_name = models.CharField(max_length=64)
-    second_name = models.CharField(max_length=64)
-    gmail = models.EmailField(max_length=255, unique=True)
-    flights = models.ManyToManyField(Flight, blank=True, related_name="passangers")
+# The class to define booked flights
+class Booked(models.Model):
+    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="bookings")
+    passengers = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
 
     # Return an easy-to-read format from the object
     def __str__(self):
-        return f"First Name: {self.first_name} | Second Name: {self.second_name} | Gmail: {self.gmail} | Flights: {self.flights}"
+        return f"Flight: {self.flight} | Passengers: {self.passengers}"
+
+
+# The class to define passengers
+class Passenger(models.Model):
+    gmail = models.EmailField(max_length=255, unique=True)
+    booked_flights = models.ManyToManyField(Booked, blank=True, related_name="booked_flights")
+
+    # Return an easy-to-read format from the object
+    def __str__(self):
+         return f"Gmail: {self.gmail} | Booked_flights: {self.booked_flights}"
+    
+

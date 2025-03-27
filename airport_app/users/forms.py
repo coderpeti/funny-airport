@@ -15,6 +15,10 @@ class RegistrationForm(forms.ModelForm):
         model = User
         # Setting basic fields other than the password
         fields = ["username", "email"]
+        help_texts = {
+            "email": None,
+            "username": None,
+        }
 
     # Password identity check
     def clean_password2(self):
@@ -32,3 +36,12 @@ class LoginForm(forms.Form):
     username = forms.CharField(label="Username")
     password = forms.CharField(widget=forms.PasswordInput, label="Password")
 
+
+
+# Creating a booking form
+class BookingForm(forms.Form):
+    # Origin and destination
+    origin = forms.CharField(label="Origin")
+    destination = forms.CharField(label="Destination")
+    # Number of passengers
+    passengers = forms.IntegerField(label="Passengers", min_value=1, max_value=10)

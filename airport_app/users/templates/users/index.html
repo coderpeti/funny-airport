@@ -1,0 +1,28 @@
+<!-- Form of booking -->
+{% extends "users/layout.html" %}
+<!-- Load static files -->
+{% load static %}
+
+{% block body %}
+    <div class="form-container">
+        <form method="POST" id="booking_form">
+            <!-- Loading the booking form -->
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- Origin field autocomplete list -->
+            <ul id="origin_suggestions"></ul>
+            <!-- Destination field autocomplete list -->
+            <ul id="destination_suggestions"></ul>
+            <!-- Submit button -->
+            <button type="submit" class="btn-submit">Search</button>
+        </form>
+    </div>
+
+    <div>
+        {{ results }}
+    </div>
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'users/css/index.css' %}">
+    <!-- Javascript setting -->
+    <script src="{% static 'users/js/index.js' %}"></script>
+{% endblock %}
