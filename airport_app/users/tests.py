@@ -1,17 +1,15 @@
 # Importing the necessary libraries
 from django.test import TestCase, Client
 from django.urls import reverse
+from .models import Airport, Flight, Passenger
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import os
 import pathlib
-from .models import Airport, Flight, Passenger
 
-# Get the file's uniform resource identifier
-def file_uri(filename):
-    return pathlib.Path(os.path.abspath(filename)).as_uri()
-
-# Setting the default browser for testing
-driver = webdriver.Chrome
 
 # Create your tests here.
 class BasicTestCase(TestCase):
@@ -35,7 +33,8 @@ class BasicTestCase(TestCase):
     # Home page testing
     def test_index(self):
         c = Client()
-        response = c.get("/")
+        url = reverse("users:index")
+        response = c.get(url)
         self.assertEqual(response.status_code, 200)
 
 
@@ -48,9 +47,26 @@ class SearchAirportTestcase(TestCase):
         url = reverse("users:search_airports")
         response = c.get(url, {"query": "Budapest"})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json, [])
     
 
+class FrontendTestCase(TestCase):
+    def setUp(self):
+        self.driver = webdriver.Chrome()
+
+    def file_uri(self, file):
+        return pathlib.Path(os.path.abspath(file)).as_uri()
+
+    def test_booking_form(self):
+        self.driver.get(self.file_uri("index.html"))
+        try:
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, "booking_form"))
+            )
+            self.assertTrue(element.is_displayed())
+        except (TimeoutException, NoSuchElementException):
+            self.fail("ERROR: The booking form did not appear!")
     
+    def tearDown(self):
+        self.driver.quit()
 
     

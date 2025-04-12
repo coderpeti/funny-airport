@@ -1,26 +1,57 @@
 # Yaml configuration file definition for git hub actions
-name: TEST
+name: Django Tests with Docker
 
+# CI will run on push and pull requests
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  test_project:
-    runs-on: windows-latest
+  # We will run the test on the latest version of Ubuntu
+  docker_test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        # We will use the latest version of postgres sql
+        image: postgres:latest
+        # Set the environment variables needed to start db
+        env:
+          POSTGRES_DB: Airport_database
+          POSTGRES_USER: peter_coder
+          POSTGRES_PASSWORD: "@HarmonHealth"
+        ports:
+          - 5432:5432
+        # Check if the database is actually started
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-      - name: Checkout repository
+      # Uploading the code to GitHub Actions
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-
-      - name: Install dependencies
+      # Start Docker compose
+      - name: Set up Docker Compose
         run: |
-          python -m pip install --upgrade pip
-          pip install -r airport_app/requirements.txt
+          docker-compose -f airport_app/docker-compose.yml up -d --build
 
-      - name: Run tests
-        run: python airport_app/manage.py test
+      # We wait 10 seconds to be ready for the test
+      - name: Wait for services to be ready
+        run: sleep 10
+      
+      # Test
+      - name: Run tests inside container
+        run: |
+          docker-compose -f airport_app/docker-compose.yml exec -T web python manage.py test
+
+      # Stop Docker compose
+      - name: Shut down Docker Compose
+        run: |
+          docker-compose -f airport_app/docker-compose.yml down
+        
