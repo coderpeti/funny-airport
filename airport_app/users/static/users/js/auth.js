@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector("#toggle-login").classList.toggle("active", formType === "login-registration");
     }
     
+    
     // SubmitForm function
     function submitForm(event) {
         // Prevent the form from being sent by reloading the entire page
@@ -44,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let formData = new FormData(form);
         // If action is set, the url points to that page instead of the current one
         let url = form.action
-        alert(formData)
+        
         fetch(url, {
             method: "POST",
             // Body of the request that contains the data

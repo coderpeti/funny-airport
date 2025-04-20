@@ -5,14 +5,15 @@
 
 {% block body %}
     <div class="form-container">
+        <p></p>
         <form method="POST" id="booking_form">
             <!-- Loading the booking form -->
             {% csrf_token %}
             {{ form.as_p }}
             <!-- Origin field autocomplete list -->
-            <ul id="origin_suggestions"></ul>
+            <ul class="suggestions" id="origin_suggestions"></ul>
             <!-- Destination field autocomplete list -->
-            <ul id="destination_suggestions"></ul>
+            <ul class="suggestions" id="destination_suggestions"></ul>
             <!-- Submit button -->
             <button type="submit" class="btn-submit">Search</button>
         </form>

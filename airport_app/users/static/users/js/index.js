@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.length > 0) {
                 // We loop through all its elements and add them to the html variable as a list item
                 data.forEach(airport => {
-                    html += `<li onclick="selectAirport('${airport}', '${inputField.id}', '${listElement.id}')">${airport}</li>`;
+                    html += `<li onmousedown="selectAirport('${airport}', '${inputField.id}', '${listElement.id}')">${airport}</li>`;
                 });
                 listElement.style.border = "1px solid #ccc";
             } else {
@@ -45,14 +45,72 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("Error fetching airports:", error));
     }
 
+
     // We call the autocomplete function on the origin field
     name_searcher_origin.addEventListener("keyup", function() {
         fetchAirports(name_searcher_origin, list_origin);
     });
 
+
     // We call the autocomplete function on the destination field
     name_searcher_destination.addEventListener("keyup", function() {
         fetchAirports(name_searcher_destination, list_destination);
+    });
+
+
+    // If you don't choose an airport
+    name_searcher_origin.addEventListener("blur", function() {
+        // We give time
+        setTimeout(function() {
+            let matchFound = false;
+
+            list_origin.querySelectorAll("li").forEach(function(listitem) {
+                // If the text entered matches what is in the list
+                if (listitem.textContent === name_searcher_origin.value) {
+                    matchFound = true;
+                }
+            })
+            
+            if (!matchFound) {
+                let firstOption = list_origin.querySelector("li")
+                // If not, then set the input field to the first list element
+                if (firstOption) {
+                    name_searcher_origin.value = firstOption.textContent;
+                }
+            }
+
+            // Delete the list
+            list_origin.innerHTML = "";
+            list_origin.style.border = "0px";
+        }, 100);
+    });
+
+
+    // If you don't choose an airport
+    name_searcher_destination.addEventListener("blur", function() {
+        // We give time
+        setTimeout(function() {
+            let matchFound = false;
+        
+            list_destination.querySelectorAll("li").forEach(function(listitem) {
+                // If the text entered matches what is in the list
+                if (listitem.textContent === name_searcher_destination.value) {
+                    matchFound = true;
+                }
+            });
+            
+            if (!matchFound) {
+                let firstOption = list_destination.querySelector("li")
+                // If not, then set the input field to the first list element
+                if (firstOption) {
+                    name_searcher_destination.value = firstOption.textContent;
+                }
+            }
+
+            // Delete the list
+            list_destination.innerHTML = "";
+            list_destination.style.border = "0px";
+        }, 100);
     });
 });
 

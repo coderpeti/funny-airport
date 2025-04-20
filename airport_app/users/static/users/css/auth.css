@@ -32,6 +32,14 @@
     color: white;  
 }
 
+#toggle-register {
+    border-radius: 4px 0 0 4px;
+}
+
+#toggle-login {
+    border-radius: 0 4px 4px 0;
+}
+
 /* Form styles */
 input, button {
     width: 100%;
@@ -72,4 +80,27 @@ input:focus {
     outline: none;
     border-color: #d9534f;
     box-shadow: 0 0 5px rgba(217, 83, 79, 0.5);
+}
+
+/* Responsive settings */
+@media (max-width: 599px) {
+    .form-container {
+        width: 310px;
+        margin: 40px auto;
+        padding: 15px;
+        font-size: 0.8rem;
+    }
+
+    input, button {
+        padding: 8px;
+        border-radius: 3px;
+    }
+
+    #toggle-register {
+        border-radius: 3px 0 0 3px;
+    }
+    
+    #toggle-login {
+        border-radius: 0 3px 3px 0;
+    }
 }
