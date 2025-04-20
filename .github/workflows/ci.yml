@@ -39,7 +39,7 @@ jobs:
       # Start Docker compose
       - name: Set up Docker Compose
         run: |
-          docker-compose -f airport_app/docker-compose.yml up -d --build
+          docker compose -f airport_app/docker-compose.yml up -d --build
 
       # We wait 10 seconds to be ready for the test
       - name: Wait for services to be ready
@@ -48,10 +48,10 @@ jobs:
       # Test
       - name: Run tests inside container
         run: |
-          docker-compose -f airport_app/docker-compose.yml exec -T web python manage.py test
+          docker compose -f airport_app/docker-compose.yml exec -T web python manage.py test
 
       # Stop Docker compose
       - name: Shut down Docker Compose
         run: |
-          docker-compose -f airport_app/docker-compose.yml down
+          docker compose -f airport_app/docker-compose.yml down
         
