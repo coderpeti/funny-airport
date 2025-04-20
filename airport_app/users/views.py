@@ -66,7 +66,7 @@ def search_airports(request):
 
         # Selecting airports that contain the query
         airports = Airport.objects.filter(Q(city__icontains=query) | Q(code__icontains=query)).values("city", "code")
-        airports_list = [f"{airport["city"]} ({airport["code"]})" for airport in airports]
+        airports_list = [f"{airport['city']} ({airport['code']})" for airport in airports]
         # Return JSON as a file that allows the list
         return JsonResponse(airports_list, safe=False)
     

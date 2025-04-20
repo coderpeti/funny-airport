@@ -4,6 +4,7 @@ from django.urls import reverse
 from .models import Airport, Flight, Passenger
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -51,15 +52,19 @@ class SearchAirportTestcase(TestCase):
 
 class FrontendTestCase(TestCase):
     def setUp(self):
-        self.driver = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        self.driver = webdriver.Chrome(options=chrome_options)
 
     def file_uri(self, file):
         return pathlib.Path(os.path.abspath(file)).as_uri()
 
     def test_booking_form(self):
-        self.driver.get(self.file_uri("index.html"))
+        self.driver.get("http://localhost:8000/users/")
         try:
-            element = WebDriverWait(self.driver, 10).until(
+            element = WebDriverWait(self.driver, 20).until(
                 EC.presence_of_element_located((By.ID, "booking_form"))
             )
             self.assertTrue(element.is_displayed())
