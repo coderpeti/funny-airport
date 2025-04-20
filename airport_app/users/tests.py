@@ -1,5 +1,5 @@
 # Importing the necessary libraries
-from django.test import TestCase, Client
+from django.test import TestCase, Client, LiveServerTestCase
 from django.urls import reverse
 from .models import Airport, Flight, Passenger
 from selenium import webdriver
@@ -50,7 +50,7 @@ class SearchAirportTestcase(TestCase):
         self.assertEqual(response.status_code, 200)
     
 
-class FrontendTestCase(TestCase):
+class FrontendTestCase(LiveServerTestCase):
     def setUp(self):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -62,7 +62,7 @@ class FrontendTestCase(TestCase):
         return pathlib.Path(os.path.abspath(file)).as_uri()
 
     def test_booking_form(self):
-        self.driver.get("http://localhost:8000/users/")
+        self.driver.get(f"{self.live_server_url}/users/")
         try:
             element = WebDriverWait(self.driver, 20).until(
                 EC.presence_of_element_located((By.ID, "booking_form"))
