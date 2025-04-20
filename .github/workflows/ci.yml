@@ -5,7 +5,7 @@ name: Django Tests with Docker
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 
 jobs:

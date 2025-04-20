@@ -6,13 +6,14 @@ from .forms import RegistrationForm, LoginForm, BookingForm
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
+from django.db.models import Q
 from .models import Airport, Flight
 import re
 
 # Create your views here.
 # Helper functions
-def render_with_results_form(request, form, results=None):
-    return render(request, "users/index.html", {"form": form, "results": results})
+def render_with_results_form(request, results=None):
+    return render(request, "users/results.html", {"results": results})
 
 # Home Page
 def index(request):
@@ -38,10 +39,9 @@ def index(request):
                 
                 # Check if there is a match
                 if not flights.exists():
-                    return render_with_results_form(request, BookingForm(), f"Unfortunately, there are no available flights between {origin_name.group(1)} and {destination_name.group(1)}")
+                    return render_with_results_form(request, f"Unfortunately, there are no available flights between {origin_name.group(1)} and {destination_name.group(1)}")
                 # If there is a match, return the results
-                
-                return render_with_results_form(request, BookingForm(), results)
+                return render_with_results_form(request, results)
             
             except Airport.DoesNotExist:
                 return HttpResponse("Error: One of the airports does not exist.", status=400)
@@ -65,7 +65,7 @@ def search_airports(request):
             return JsonResponse([], safe=False) 
 
         # Selecting airports that contain the query
-        airports = Airport.objects.filter(city__icontains=query).values("city", "code")
+        airports = Airport.objects.filter(Q(city__icontains=query) | Q(code__icontains=query)).values("city", "code")
         airports_list = [f"{airport["city"]} ({airport["code"]})" for airport in airports]
         # Return JSON as a file that allows the list
         return JsonResponse(airports_list, safe=False)

@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // If you don't choose an airport
+    // If you don't choose an origin
     name_searcher_origin.addEventListener("blur", function() {
         // We give time
         setTimeout(function() {
@@ -77,6 +77,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (firstOption) {
                     name_searcher_origin.value = firstOption.textContent;
                 }
+                else {
+                    name_searcher_origin.value = "";
+                }
             }
 
             // Delete the list
@@ -86,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // If you don't choose an airport
+    // If you don't choose a destination
     name_searcher_destination.addEventListener("blur", function() {
         // We give time
         setTimeout(function() {
@@ -105,6 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (firstOption) {
                     name_searcher_destination.value = firstOption.textContent;
                 }
+                else {
+                    name_searcher_destination.value = "";
+                }
             }
 
             // Delete the list
@@ -118,6 +124,4 @@ document.addEventListener("DOMContentLoaded", function () {
 // Make results clickable
 function selectAirport(airportName, inputId, listId) {
     document.querySelector(`#${inputId}`).value = airportName;
-    document.querySelector(`#${listId}`).innerHTML = "";
-    document.querySelector(`#${listId}`).style.border = "0px";
 }

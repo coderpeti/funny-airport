@@ -1,3 +1,4 @@
+argon2-cffi
 Django
 psycopg2
 selenium
