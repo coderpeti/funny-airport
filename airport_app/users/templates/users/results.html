@@ -4,10 +4,133 @@
 {% load static %}
 
 {% block body %}
-    <div>
-        {{ results }}
-    </div>
-    
+    <!-- If there is an error message -->
+    {% if message %}
+        <h3>{{ message }}</h3>
+    {% endif %}
+
+    <!-- We go through all the flights you are looking for and list them -->
+    {% for flight in results %}
+        <div class="results-container">
+            <p><strong>Origin:</strong> {{ flight.origin }}</p>
+            <p><strong>Destination:</strong> {{ flight.destination }}</p>
+            <p><strong>Duration:</strong> {{ flight.duration }}</p>
+            <p><strong>Capacity:</strong> {{ flight.capacity }}</p>
+            <p><strong>Available Seats:</strong> {{ flight.available }}</p>
+
+            <!-- We also add a button that can be used to start the seat selector -->
+            <button 
+                data-id="{{ flight.id }}" 
+                data-capacity="{{ flight.capacity }}" 
+                data-available="{{ flight.available }}" 
+                data-passengers="{{ passengers }}">
+                Choose Your Seats
+            </button>
+
+            <!-- The location where the seat selector will appea -->
+            <div id="seat-selector-root"></div>
+        </div>
+    {% endfor %}
+
+    <!-- Importing React and ReactDOM -->
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Importing Babel to compile jsx -->
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+
+    <!-- Using verbatim so that DTL doesn't take into account some syntax -->
+    {% verbatim %}
+    <script type="text/babel">
+        // Destructuring
+        const { useState } = React;
+        const { unmountComponentAtNode } = ReactDOM;
+
+        // Defining the seat selector
+        function SeatSelector({ flightId, capacity, available, passengers }) {
+            // We create a useState that stores how many seats have been selected
+            const [selected, setSelected] = useState([]);
+
+            // Here we check whether the chair has already been selected or not, if so, then clicking on it will delete it, if not, then select it
+            const toggleSeat = (i) => {
+                if (selected.includes(i)) {
+                    setSelected(selected.filter(n => n !== i));
+                } else if (selected.length < passengers) {
+                    setSelected([...selected, i]);
+                }
+            };
+
+            const handleBooking = () => {
+                window.location.href = `/checkout?flight_id=${flightId}&passengers=${passengers}`;
+            }
+
+            // Create the appearance of the Seatselector based on the specified capacity and available 
+            return (
+                <div>
+                    <div id={"seat-selector-container"}>
+                        {/* We create an array whose length will be equal to the capacity */}
+                        {Array.from({ length: capacity }, (_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => toggleSeat(i)}
+                                disabled={i >= available}
+                                style={{
+                                    padding: "10px",
+                                    backgroundColor: selected.includes(i) ? "#67AE6E" : "lightgray",
+                                    cursor: i >= available ? "not-allowed" : "pointer"
+                                }}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                    </div>
+                    {/* Book now button if enough seats are selected */}
+                    {selected.length === passengers && (
+                        <button onClick={handleBooking}>Book Now</button>
+                    )}
+                    {/* We print how many chairs are still available to choose */}
+                    <p>Selected: {selected.length} seat{selected.length > 1 ? "s" : ""} / {passengers} seat{passengers !== 1 ? "s" : ""}</p>
+                </div>
+            );
+        }
+
+        // The function that is launched when we click on the choose your seats button
+        function openSeatSelector(event) {
+            const button = event.target;
+            const flightId = button.getAttribute("data-id");
+            const capacity = parseInt(button.getAttribute("data-capacity"));
+            const available = parseInt(button.getAttribute("data-available"));
+            const passengers = parseInt(button.getAttribute("data-passengers"));
+            
+            // Stop the react components that were open so far
+            document.querySelectorAll("#seat-selector-root").forEach(container => {
+               unmountComponentAtNode(container);
+               container.innerHTML = "";
+               const prevButton = container.previousElementSibling;
+               if (prevButton) prevButton.disabled = false;
+            });
+
+            // Disable choose your seats button
+            button.disabled = true;
+
+            // We select the div in which the react component will run
+            const seatSelectorRoot = button.nextElementSibling;
+
+            ReactDOM.render(
+                <SeatSelector flightId={flightId} capacity={capacity} available={available} passengers={passengers} />,
+                seatSelectorRoot
+            );
+        }
+
+        // Make sure the DOM is fully loaded before attaching event listeners
+        window.onload = () => {
+            const buttons = document.querySelectorAll("button[data-id]");
+            buttons.forEach(button => {
+                button.addEventListener("click", openSeatSelector);
+            });
+        };
+    </script>
+    {% endverbatim %}
 
     <!-- Stylesheet setting -->
     <link rel="stylesheet" href="{% static 'users/css/results.css' %}">

@@ -1,7 +1,8 @@
 # Importing the necessary libraries
-from django.test import TestCase, Client, LiveServerTestCase
+from django.test import TestCase, Client
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
-from .models import Airport, Flight, Passenger
+from .models import Airport, Flight
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -10,7 +11,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import os
 import pathlib
-
 
 # Create your tests here.
 class BasicTestCase(TestCase):
@@ -50,17 +50,21 @@ class SearchAirportTestcase(TestCase):
         self.assertEqual(response.status_code, 200)
     
 
-class FrontendTestCase(LiveServerTestCase):
+class FrontendTestCase(StaticLiveServerTestCase):
+    # Set basic settings
     def setUp(self):
+        # Since we are using chrome to test the frontend in the container, we configure the driver accordingly
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         self.driver = webdriver.Chrome(options=chrome_options)
 
+    # Create a function that converts a file to a uniform resource identifier
     def file_uri(self, file):
         return pathlib.Path(os.path.abspath(file)).as_uri()
 
+    # Check if "booking_form" appears
     def test_booking_form(self):
         self.driver.get(f"{self.live_server_url}/users/")
         try:
@@ -70,7 +74,8 @@ class FrontendTestCase(LiveServerTestCase):
             self.assertTrue(element.is_displayed())
         except (TimeoutException, NoSuchElementException):
             self.fail("ERROR: The booking form did not appear!")
-    
+
+    # Stop the driver
     def tearDown(self):
         self.driver.quit()
 

@@ -1,5 +1,6 @@
 # Importing the necessary libraries
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
@@ -20,33 +21,27 @@ class Flight(models.Model):
     origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="departures") 
     destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="arrivals")
     duration = models.IntegerField(validators=[MinValueValidator(1)])
+    capacity = models.IntegerField(validators=[MinValueValidator(1)], default=100)
 
     # Defining a flight validation function
     def is_valid_flight(self):
         return self.origin != self.destination
     
+    def available_seats(self):
+        booked_passengers = sum(booking.passengers for booking in self.bookings.all())
+        return self.capacity - booked_passengers
+
     # Return an easy-to-read format from the object
     def __str__(self):
-        return f"Origin: {self.origin} | Destination: {self.destination} | Duration: {self.duration}"
+        return f"Origin: {self.origin} | Destination: {self.destination} | Duration: {self.duration} | Capacity: {self.capacity}"
 
 
 # The class to define booked flights
 class Booked(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
     flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="bookings")
     passengers = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
 
     # Return an easy-to-read format from the object
     def __str__(self):
         return f"Flight: {self.flight} | Passengers: {self.passengers}"
-
-
-# The class to define passengers
-class Passenger(models.Model):
-    gmail = models.EmailField(max_length=255, unique=True)
-    booked_flights = models.ManyToManyField(Booked, blank=True, related_name="booked_flights")
-
-    # Return an easy-to-read format from the object
-    def __str__(self):
-         return f"Gmail: {self.gmail} | Booked_flights: {self.booked_flights}"
-    
-

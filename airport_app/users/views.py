@@ -12,8 +12,12 @@ import re
 
 # Create your views here.
 # Helper functions
-def render_with_results_form(request, results=None):
-    return render(request, "users/results.html", {"results": results})
+def render_with_results_form(request, results=None, message=None, passengers=None):
+    return render(request, "users/results.html", {
+        "results": results or [],
+        "message": message,
+        "passengers": passengers
+    })
 
 # Home Page
 def index(request):
@@ -35,13 +39,25 @@ def index(request):
                 destination_airport = Airport.objects.get(code=destination_name.group(1))
                 # Search in the Flight model
                 flights = Flight.objects.filter(origin=origin_airport, destination=destination_airport)
-                results =  [f"ORIGIN: {flight.origin.city} ({flight.origin.code}) DESTINATION: {flight.destination.city} ({flight.destination.code}) DURATION: {flight.duration}" for flight in flights]
+                flights = [flight for flight in flights if flight.available_seats() >= passengers]
+                results =  [
+                        {
+                            "id": flight.id,
+                            "origin": f"{flight.origin.city} ({flight.origin.code})", 
+                            "destination": f"{flight.destination.city} ({flight.destination.code})", 
+                            "duration": flight.duration, 
+                            "capacity": flight.capacity, 
+                            "available": flight.available_seats()
+                        }
+                      for flight in flights
+                    ]
                 
                 # Check if there is a match
-                if not flights.exists():
-                    return render_with_results_form(request, f"Unfortunately, there are no available flights between {origin_name.group(1)} and {destination_name.group(1)}")
+                if not flights:
+                    message = f"Unfortunately, there are no available flights between {origin_name.group(1)} and {destination_name.group(1)}"
+                    return render_with_results_form(request, results=[], message=message)
                 # If there is a match, return the results
-                return render_with_results_form(request, results)
+                return render_with_results_form(request, results=results, message=None, passengers=passengers)
             
             except Airport.DoesNotExist:
                 return HttpResponse("Error: One of the airports does not exist.", status=400)

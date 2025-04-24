@@ -1,0 +1,125 @@
+/* Results container */
+.results-container {
+    width: 500px;
+    margin: 50px auto;
+    padding: 20px 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.results-container p {
+    font-size: 1.05rem;
+    margin: 10px 0;
+}
+
+.results-container strong {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #d9534f;
+    color: white;
+    cursor: pointer;
+    border: none;
+    margin-top: 15px;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+button:disabled {
+    background-color: #ccc;
+    color: #666;
+    opacity: 0.6;
+    border: 1px solid #aaa;
+    cursor: not-allowed;
+}
+
+/* Error message */
+h3 {
+    width: 400px;
+    text-align: center;
+    color: #d9534f;
+    border: 1px solid #d9534f;
+    padding: 30px 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Seat selector */
+#seat-selector-container {
+    display: grid; 
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+}
+
+#seat-selector-container button {
+    transition: 0.2s ease;
+}
+
+/* Hover */
+.results-container:hover {
+    transform: scale(1.01);
+    transition: 0.2s ease;
+    border-color: #d9534f;
+    box-shadow: 0 2 20px rgba(217, 83, 79, 0.5);
+}
+
+button:hover {
+    background-color: #cc4c48;
+}
+
+button:disabled:hover {
+    background-color: #ccc;
+}
+
+h3:hover {
+    transform: scale(1.01);
+    transition: 0.2s ease;
+}
+
+/* Responsive settings */
+@media (max-width: 599px) {
+    .results-container {
+        width: 310px;
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .results-container p {
+        font-size: 0.9rem;
+    }
+
+    button {
+        padding: 8px;
+        border-radius: 3px;
+    }
+
+    h3 {
+        width: 210px;
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+}
+
+/* Seat selector on small screens */
+@media (max-width: 599px) {
+    #seat-selector-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 400px) {
+    #seat-selector-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
