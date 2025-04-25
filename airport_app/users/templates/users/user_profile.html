@@ -1,6 +1,21 @@
+<!-- Form of booking -->
 {% extends "users/layout.html" %}
-
+<!-- Load static files -->
 {% load static %}
 
 {% block body %}
+    <div class="profile-container">
+        <!-- User's username -->
+        <h2>Welcome, {{ user.username }}!</h2>
+        <!-- User's email address -->
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <!-- Buttons -->
+        <div class="button-group">
+            <a href="{% url 'users:my_tickets' %}" class="button">My Tickets</a>
+            <a href="{% url 'users:logout' %}" class="button">Logout</a>
+        </div>
+    </div>
+
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
 {% endblock %}

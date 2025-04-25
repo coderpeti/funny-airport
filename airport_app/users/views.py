@@ -85,8 +85,8 @@ def search_airports(request):
 # Registration and Login Page
 def user_authentication(request, register_login):
     # If the user's profile is currently available
-    #if request.user.is_authenticated:
-    #    return HttpResponseRedirect(reverse("users:profile"))
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("users:profile"))
 
     # If the user wants to register
     if register_login == "registration-login":
@@ -151,12 +151,17 @@ def user_authentication(request, register_login):
 
 # Profile Page
 def user_profile(request):
+    # If the user is not logged in
+    if not request.user.is_authenticated:
+        return HttpResponse("Error: You are not logged in.", status=401)
+    
     return render(request, "users/user_profile.html")
 
 
 # Logout
 def user_logout(request):
-    pass
+    logout(request)
+    return HttpResponseRedirect(reverse("users:authentication", args=["login-registration"]))
 
 
 # To Browse Special Offers Page
