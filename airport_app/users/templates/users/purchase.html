@@ -1,0 +1,13 @@
+<!-- Form of booking -->
+{% extends "users/layout.html" %}
+<!-- Load static files -->
+{% load static %}
+
+{% block body %}
+    <div class="purchase-container">
+        <p class="purchase-message">Have a great flight {{ user.username }}!</p>
+    </div>
+
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'users/css/purchase.css' %}">
+{% endblock %}

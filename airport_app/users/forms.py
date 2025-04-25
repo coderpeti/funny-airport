@@ -45,3 +45,20 @@ class BookingForm(forms.Form):
     destination = forms.CharField(label="Destination")
     # Number of passengers
     passengers = forms.IntegerField(label="Passengers", min_value=1, max_value=10)
+
+
+# Creating a checkout form
+class CheckoutForm(forms.Form):
+    # Number of carry-on bags
+    carry_on_bags = forms.IntegerField(label="Number of carry-on bags", min_value=0, max_value=5)
+    # Number of checked bags
+    checked_bags = forms.IntegerField(label="Number of checked bags", min_value=0, max_value=5)
+    # Additional Requests
+    additional_request = forms.CharField(
+        label="Additional Requests (Optional)",
+        required=False,
+        widget=forms.Textarea(attrs={
+            "rows": 3,
+            "id": "textarea"
+        })
+    )

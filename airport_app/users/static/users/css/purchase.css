@@ -1,0 +1,27 @@
+/* Purchase messages */
+.purchase-message {
+    width: 400px;
+    text-align: center;
+    border: 1px solid;
+    padding: 30px 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.purchase-message:hover {
+    transform: scale(1.01);
+    transition: 0.2s ease;
+}
+
+/* Responsive settings */
+@media (max-width: 599px) {
+    .purchase-message {
+        width: 210px;
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+}
+

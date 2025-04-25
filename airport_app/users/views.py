@@ -2,22 +2,16 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
-from .forms import RegistrationForm, LoginForm, BookingForm
+from .forms import RegistrationForm, LoginForm, BookingForm, CheckoutForm
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
 from django.db.models import Q
-from .models import Airport, Flight
+from .models import Airport, Booked, Flight
+from .utils import render_with_results_form, is_ajax
 import re
 
 # Create your views here.
-# Helper functions
-def render_with_results_form(request, results=None, message=None, passengers=None):
-    return render(request, "users/results.html", {
-        "results": results or [],
-        "message": message,
-        "passengers": passengers
-    })
 
 # Home Page
 def index(request):
@@ -73,7 +67,7 @@ def index(request):
 def search_airports(request):
 
     # Checking the header of the django request object
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest': 
+    if is_ajax(request):
         # Retrieve the query
         query = request.GET.get("query", "") 
 
@@ -117,7 +111,7 @@ def user_authentication(request, register_login):
             return JsonResponse({"success": True, "redirect": "/users/"})
         
         # Checking the header of the django request object
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if is_ajax(request):
             # Load a template without returning the entire page, adding the request parameter because of csrf
             html = render_to_string("users/registration.html", {"form": form}, request)
             # Return the html code as a json file
@@ -147,7 +141,7 @@ def user_authentication(request, register_login):
                 return JsonResponse({"success": True, "redirect": "/users/"})
 
         # Checking the header of the django request object    
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if is_ajax(request):
             # Load a template without returning the entire page, adding the request parameter because of csrf
             html = render_to_string("users/login.html", {"form": form}, request)
             # Return the html code as a json file
@@ -179,9 +173,53 @@ def my_tickets(request):
 
 # Checkout Page
 def checkout(request):
-    pass
+    # If the user is logged in
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("users:authentication", args=["registration-login"]))
+    
+    # If POST is the request method
+    if request.method == "POST":
+        form = CheckoutForm(request.POST)
 
+        # If the form is valid
+        if form.is_valid():
+            # Retrieve data
+            flight_id = request.GET.get("flight_id")
+            passengers = request.GET.get("passengers")
+            if not flight_id or not passengers:
+                return HttpResponse("Error: Missing flight_id or passengers.", status=400)
+            carry_on_bags = form.cleaned_data["carry_on_bags"]
+            checked_bags = form.cleaned_data["checked_bags"]
+            
+            # To be safe, we check to see if the flight actually exists
+            try:
+                flight = Flight.objects.get(pk=flight_id)
+                Booked.objects.create(user=request.user, flight=flight, passengers=passengers, carry_on_bags=carry_on_bags, checked_bags=checked_bags)
+                
+                # If the flight is full, we delete it
+                if flight.available_seats() == 0:
+                    flight.delete()
+
+                # We create a new reservation
+                return HttpResponseRedirect(reverse("users:purchase"))
+
+            except Flight.DoesNotExist:
+                return HttpResponse("Error: Flight not found.", status=404)
+        
+    else:
+        form = CheckoutForm()
+
+    # Load form
+    return render(request, "users/checkout.html", {"form": form})
 
 # Purchase Page
 def purchase(request):
-    pass
+    # Select the planes belonging to the user
+    bookings = Booked.objects.filter(user=request.user)
+    
+    # If there are reservations for the user
+    if bookings.exists():
+        return render(request, "users/purchase.html")
+    
+    else:
+        return HttpResponse("Error: No flights booked yet.", status=404)

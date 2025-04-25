@@ -41,7 +41,9 @@ class Booked(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
     flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="bookings")
     passengers = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    carry_on_bags = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    checked_bags = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
 
     # Return an easy-to-read format from the object
     def __str__(self):
-        return f"Flight: {self.flight} | Passengers: {self.passengers}"
+        return f"User: {self.user} | Flight: {self.flight} | Passengers: {self.passengers} | Carry on bags: {self.carry_on_bags} | Checked bags: {self.checked_bags}"
