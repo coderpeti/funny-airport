@@ -1,0 +1,31 @@
+<!-- Form of booking -->
+{% extends "users/layout.html" %}
+<!-- Load static files -->
+{% load static %}
+
+{% block body %}
+    <!-- If there is an error message -->
+    {% if message %}
+        <h3>{{ message }}</h3>
+    {% endif %}
+
+    <!-- We go through all the bookings you are looking for and list them -->
+    {% for booking in results %}
+        <div class="results-container">
+            <p><strong>Origin:</strong> {{ booking.origin }}</p>
+            <p><strong>Destination:</strong> {{ booking.destination }}</p>
+            <p><strong>Duration:</strong> {{ booking.duration }}</p>
+            <p><strong>Number of Passengers:</strong> {{ booking.passengers }}</p>
+            <p><strong>Carry On Bags:</strong> {{ booking.carry_on_bags }}</p>
+            <p><strong>Checked Bags:</strong> {{ booking.checked_bags }}</p>
+            <form method="POST" action="{% url 'users:cancel_booking' %}">
+                {% csrf_token %}
+                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                <button type="submit">Cancel Booking</button>
+            </form>
+        </div>
+    {% endfor %}
+
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'users/css/tickets.css' %}">
+{% endblock %}

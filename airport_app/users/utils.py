@@ -9,5 +9,11 @@ def render_with_results_form(request, results=None, message=None, passengers=Non
         "passengers": passengers
     })
 
+def render_user_flights(request, results=None, message=None):
+    return render(request, "users/tickets.html", {
+        "results": results or [],
+        "message": message
+    })
+
 def is_ajax(request) -> bool:
     return request.headers.get('X-Requested-With') == 'XMLHttpRequest'

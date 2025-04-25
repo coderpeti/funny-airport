@@ -17,7 +17,3 @@ def user_login(request):
 def user_logout(request):
     pass
 
-
-# The Page Is For Creating a Special Offer
-def making_a_special_offer(request):
-    pass

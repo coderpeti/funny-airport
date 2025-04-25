@@ -2,20 +2,20 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
-from .forms import RegistrationForm, LoginForm, BookingForm, CheckoutForm
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
 from django.db.models import Q
+from django.views.decorators.http import require_POST
 from .models import Airport, Booked, Flight
-from .utils import render_with_results_form, is_ajax
+from .forms import RegistrationForm, LoginForm, BookingForm, CheckoutForm
+from .utils import render_with_results_form, render_user_flights, is_ajax
 import re
 
 # Create your views here.
 
 # Home Page
 def index(request):
-    
     # If POST is the request method
     if request.method == "POST":
         form = BookingForm(request.POST)
@@ -65,7 +65,6 @@ def index(request):
 
 # Search Airports
 def search_airports(request):
-
     # Checking the header of the django request object
     if is_ajax(request):
         # Retrieve the query
@@ -85,7 +84,6 @@ def search_airports(request):
 
 # Registration and Login Page
 def user_authentication(request, register_login):
-    
     # If the user's profile is currently available
     #if request.user.is_authenticated:
     #    return HttpResponseRedirect(reverse("users:profile"))
@@ -156,7 +154,7 @@ def user_profile(request):
     return render(request, "users/user_profile.html")
 
 
-# Logout Page
+# Logout
 def user_logout(request):
     pass
 
@@ -168,7 +166,32 @@ def special_offers(request):
 
 # My Tickets Page
 def my_tickets(request):
-    pass
+    # If the user is not logged in
+    if not request.user.is_authenticated:
+        return render_user_flights(request, results=[], message="You are not logged in")
+    
+    # Select the planes belonging to the user
+    bookings = Booked.objects.filter(user=request.user)
+
+    # If there are not reservations for the user
+    if not bookings.exists():
+        return render_user_flights(request, results=[], message="No flights booked yet")
+
+    results =  [
+            {
+                "id": booking.id,
+                "origin": f"{booking.flight.origin.city} ({booking.flight.origin.code})", 
+                "destination": f"{booking.flight.destination.city} ({booking.flight.destination.code})", 
+                "duration": booking.flight.duration, 
+                "passengers": booking.passengers, 
+                "carry_on_bags": booking.carry_on_bags,
+                "checked_bags": booking.checked_bags
+            }
+          for booking in bookings
+        ]
+    
+    # If there is a match, return the results
+    return render_user_flights(request, results=results, message=None)
 
 
 # Checkout Page
@@ -212,14 +235,29 @@ def checkout(request):
     # Load form
     return render(request, "users/checkout.html", {"form": form})
 
+
 # Purchase Page
 def purchase(request):
+    # If the user is not logged in
+    if not request.user.is_authenticated:
+        return HttpResponse("Error: You are not logged in.", status=401)
+    
     # Select the planes belonging to the user
     bookings = Booked.objects.filter(user=request.user)
     
-    # If there are reservations for the user
-    if bookings.exists():
-        return render(request, "users/purchase.html")
-    
-    else:
+    # If there are not reservations for the user
+    if not bookings.exists():
         return HttpResponse("Error: No flights booked yet.", status=404)
+    
+    return render(request, "users/purchase.html")
+
+
+# Cancel Booking
+# Only use this function if it was triggered by a POST request
+@require_POST
+def cancel_booking(request):
+    booking_id = request.POST.get("booking_id")
+    booking = Booked.objects.get(pk=booking_id, user=request.user)
+    booking.delete()
+    
+    return HttpResponseRedirect(reverse("users:my_tickets"))
