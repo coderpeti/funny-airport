@@ -18,6 +18,21 @@ This project includes two main interfaces:
   - Post custom and funny special offers (e.g., _"Carry my suitcase for a week and travel for free"_)
   - Manage worker profile
 
+## Preview
+
+1. **Seat Selector Page**
+![Seat Selector](screenshots/seat-selector.png)
+2. **Flight Search Page**
+![Flight Search](screenshots/flight-search.png)
+3. **Login Page**
+![Login](screenshots/login.png)
+4. **Special Offers List**
+![Special Offers](screenshots/special-offers.png)
+5. **User Profile**
+![User Profile](screenshots/profile.png)
+6. **Create Offer (Worker)**
+![Create Offer](screenshots/worker-offer.png)
+
 ## Features
 
 ### User Side
