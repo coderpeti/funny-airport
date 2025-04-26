@@ -87,8 +87,8 @@ def search_airports(request):
 # Registration and Login Page
 def user_authentication(request, register_login):
     # If the user's profile is currently available
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("users:profile"))
+    #if request.user.is_authenticated:
+     #   return HttpResponseRedirect(reverse("users:profile"))
 
     # If the user wants to register
     if register_login == "registration-login":
