@@ -15,9 +15,16 @@
 
 
         // The book now function that takes you to the checkout page
-        function goToCheckout(flightId, passengers) {
+        function goToCheckout(flightId, passengers, available_seats) {
+            // If no flight is available
             if (flightId === null) {
                 alert("There are no flights available for this offer.");
+                return;
+            }
+
+            // If there are no enough available seats on the plane
+            if (available_seats < passengers) {
+                alert("Sorry, there are not enough available seats on this flight.");
                 return;
             }
 
@@ -53,12 +60,16 @@
                 data.offers.forEach(offer => {
                     const offerElement = document.createElement("div");
                     offerElement.classList.add('special-offer-container');
+                    // If there are not enough seats available, disable the button
+                    const buttonDisabled = offer.available_seats < offer.number_of_passengers;
+                    const disabledAttribute = buttonDisabled ? "disabled" : "";
+                    const buttonText = buttonDisabled ? "Not Enough Seats" : "Book Now";
                     offerElement.innerHTML = `
                         <p><strong>Offer Text:</strong> ${offer.offer_text}</p>
                         <p><strong>Number of Passengers:</strong> ${offer.number_of_passengers}</p>
                         <p><strong>Worker:</strong> ${offer.worker_name}</p>
-                        <button onclick="goToCheckout(${offer.random_flight_id}, ${offer.number_of_passengers})">
-                            Book Now
+                        <button onclick="goToCheckout(${offer.random_flight_id}, ${offer.number_of_passengers}, ${offer.available_seats})" ${disabledAttribute}>
+                            ${buttonText}
                         </button>
                     `; 
                     offersContainer.appendChild(offerElement);
@@ -71,6 +82,7 @@
                     noMoreData = true;
                 }
 
+                // The page is not loading
                 loading = false;
 
                 checkNeedMoreOffers();

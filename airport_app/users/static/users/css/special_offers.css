@@ -33,6 +33,14 @@ button {
     font-style: italic;
 }
 
+button:disabled {
+    background-color: #ccc;
+    color: #666;
+    opacity: 0.6;
+    border: 1px solid #aaa;
+    cursor: not-allowed;
+}
+
 /* Hover */
 .special-offer-container:hover {
     transform: scale(1.01);
@@ -43,6 +51,10 @@ button {
 
 button:hover {
     background-color: #cc4c48;
+}
+
+button:disabled:hover {
+    background-color: #ccc;
 }
 
 /* Responsive settings */

@@ -181,16 +181,19 @@ def special_offers(request):
         offers_batch = offers[start_index:start_index + batch_size]
 
         offers_data = []
-        all_flight_ids = list(Flight.objects.values_list("id", flat=True))
+        all_flights = list(Flight.objects.all())
 
         for offer in offers_batch:
             # Random flight selection
-            random_flight_id = random.choice(all_flight_ids) if all_flight_ids else None
+            random_flight = random.choice(all_flights) if all_flights else None
+            random_flight_id = random_flight.id if random_flight else None
+            available_seats = random_flight.available_seats() if random_flight else None
             offers_data.append({
                 "offer_text": offer.offer_text,
                 "number_of_passengers": offer.number_of_passengers,
                 "worker_name": offer.worker.name,
-                "random_flight_id": random_flight_id
+                "random_flight_id": random_flight_id,
+                "available_seats": available_seats
             })
 
         # We return the offers and the next batch information
