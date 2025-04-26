@@ -1,0 +1,18 @@
+<!-- Importing the basic template -->
+{% extends "workers/layout.html" %}
+<!-- Load static files -->
+{% load static %}
+
+{% block body %}
+    <!-- Form div -->
+    <div class="form-container">
+        <form method="POST" id="login-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'workers/css/login.css' %}">
+{% endblock %}

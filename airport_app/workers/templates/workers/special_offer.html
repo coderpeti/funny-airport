@@ -1,0 +1,18 @@
+<!-- Importing the basic template -->
+{% extends "workers/layout.html" %}
+<!-- Load static files -->
+{% load static %}
+
+{% block body %}
+    <!-- Form div -->
+    <div class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Create Special Offer</button>
+        </form>
+    </div>
+
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'workers/css/special_offer.css' %}">
+{% endblock %}

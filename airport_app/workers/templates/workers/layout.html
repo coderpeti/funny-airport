@@ -9,7 +9,7 @@
         <!-- Enter address -->
         <title>AirPolet</title>
         <!-- Define basic stylesheet --> 
-        <link rel="stylesheet" href="{% static 'users/css/layout.css' %}"> 
+        <link rel="stylesheet" href="{% static 'workers/css/layout.css' %}"> 
         <!-- Icon setting -->
         <link rel="icon" href="{% static 'users/airpolet_logo.ico' %}" type="image/x-icon">
         <meta name="viewport" content="initial-scale=1, width=device-width">
@@ -19,15 +19,6 @@
         <!-- Header setting -->
         <header>
             <div class="logo">AirPolet</div>
-            <nav>
-                <ul>
-                    <li><a class="header-link" href="/users/">Home Page</a></li>
-                    <li><a class="header-link" href="/users/special-offers/">Special Offers</a></li>                   
-                </ul>
-            </nav>
-            <a class="header-link" href="/users/authentication/registration-login/">
-                <img id="profile-image" src="{% static 'users/profile.png' %}" alt="Profile">
-            </a>
         </header>
         
         {% block body %}

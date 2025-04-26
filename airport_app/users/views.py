@@ -10,6 +10,8 @@ from django.views.decorators.http import require_POST
 from .models import Airport, Booked, Flight
 from .forms import RegistrationForm, LoginForm, BookingForm, CheckoutForm
 from .utils import render_with_results_form, render_user_flights, is_ajax
+from workers.models import SpecialOffer
+import random
 import re
 
 # Create your views here.
@@ -35,16 +37,16 @@ def index(request):
                 flights = Flight.objects.filter(origin=origin_airport, destination=destination_airport)
                 flights = [flight for flight in flights if flight.available_seats() >= passengers]
                 results =  [
-                        {
-                            "id": flight.id,
-                            "origin": f"{flight.origin.city} ({flight.origin.code})", 
-                            "destination": f"{flight.destination.city} ({flight.destination.code})", 
-                            "duration": flight.duration, 
-                            "capacity": flight.capacity, 
-                            "available": flight.available_seats()
-                        }
-                      for flight in flights
-                    ]
+                    {
+                        "id": flight.id,
+                        "origin": f"{flight.origin.city} ({flight.origin.code})", 
+                        "destination": f"{flight.destination.city} ({flight.destination.code})", 
+                        "duration": flight.duration, 
+                        "capacity": flight.capacity, 
+                        "available": flight.available_seats()
+                    }
+                    for flight in flights
+                ]
                 
                 # Check if there is a match
                 if not flights:
@@ -166,7 +168,39 @@ def user_logout(request):
 
 # To Browse Special Offers Page
 def special_offers(request):
-    pass
+    if is_ajax(request):
+        # Get the list of offers
+        offers = SpecialOffer.objects.all().order_by("-id")
+
+        # Pass the offers to the first `n` offers
+        start_index = int(request.GET.get("start_index", 0))
+        # We display 8 offers at once
+        batch_size = 8
+
+        # Slicing the offers into the desired block
+        offers_batch = offers[start_index:start_index + batch_size]
+
+        offers_data = []
+        all_flight_ids = list(Flight.objects.values_list("id", flat=True))
+
+        for offer in offers_batch:
+            # Random flight selection
+            random_flight_id = random.choice(all_flight_ids) if all_flight_ids else None
+            offers_data.append({
+                "offer_text": offer.offer_text,
+                "number_of_passengers": offer.number_of_passengers,
+                "worker_name": offer.worker.name,
+                "random_flight_id": random_flight_id
+            })
+
+        # We return the offers and the next batch information
+        next_start_index = start_index + batch_size if len(offers_batch) == batch_size else None
+        return JsonResponse({
+            "offers": offers_data,
+            "next_start_index": next_start_index
+        })
+    
+    return render(request, "users/special_offers.html")
 
 
 # My Tickets Page
@@ -183,17 +217,17 @@ def my_tickets(request):
         return render_user_flights(request, results=[], message="No flights booked yet")
 
     results =  [
-            {
-                "id": booking.id,
-                "origin": f"{booking.flight.origin.city} ({booking.flight.origin.code})", 
-                "destination": f"{booking.flight.destination.city} ({booking.flight.destination.code})", 
-                "duration": booking.flight.duration, 
-                "passengers": booking.passengers, 
-                "carry_on_bags": booking.carry_on_bags,
-                "checked_bags": booking.checked_bags
-            }
-          for booking in bookings
-        ]
+        {
+            "id": booking.id,
+            "origin": f"{booking.flight.origin.city} ({booking.flight.origin.code})", 
+            "destination": f"{booking.flight.destination.city} ({booking.flight.destination.code})", 
+            "duration": booking.flight.duration, 
+            "passengers": booking.passengers, 
+            "carry_on_bags": booking.carry_on_bags,
+            "checked_bags": booking.checked_bags
+        }
+        for booking in bookings
+    ]
     
     # If there is a match, return the results
     return render_user_flights(request, results=results, message=None)

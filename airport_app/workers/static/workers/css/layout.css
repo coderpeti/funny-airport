@@ -1,0 +1,59 @@
+/* Styles valid everywhere */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Setting the font for the page */
+body {
+    font-family: Arial, sans-serif;
+}
+
+
+/* Header */
+/* Header style defaults */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #333;
+    color: white;
+    font-style: italic;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Configure logo style */
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-style: italic;
+    color: #04a6e0;
+}
+
+/* Footer style */
+footer {
+    font-size: 1rem;
+    font-style: italic;
+    color: #333;
+    text-align: center;
+}
+
+/* Responsive settings */
+@media (max-width: 599px) {
+    header {
+        padding: 20px;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    footer {
+        font-size: 0.8rem;
+        font-style: italic;
+        color: #333;
+        text-align: center;
+    }
+}

@@ -1,0 +1,101 @@
+<!-- Importing the basic template -->
+{% extends "users/layout.html" %}
+<!-- Load static files -->
+{% load static %}
+
+{% block body %}
+    <div id="special-offers-list"></div>
+
+    <script>
+        // Starting index from which to load offers
+        let currentStartIndex = 0;
+        // The variable that monitors whether there is more data
+        let noMoreData = false;
+        let loading = false;
+
+
+        // The book now function that takes you to the checkout page
+        function goToCheckout(flightId, passengers) {
+            if (flightId === null) {
+                alert("There are no flights available for this offer.");
+                return;
+            }
+
+            // We will redirect you to the checkout page
+            window.location.href = `/users/checkout?flight_id=${flightId}&passengers=${passengers}`;
+        }
+
+        // This function checks if more than eight offers are needed
+        function checkNeedMoreOffers() {
+            const pageHeight = document.body.offsetHeight;
+            const viewportHeight = window.innerHeight;
+
+            if (pageHeight <= viewportHeight && !noMoreData) {
+                loadSpecialOffers(currentStartIndex)
+            }
+        }
+        
+        // Load the offers
+        function loadSpecialOffers(startIndex) {
+            // If we already load it, don't ask again
+            if (loading || noMoreData) return;
+
+            loading = true;
+
+            fetch(`/users/special-offers/?start_index=${startIndex}`, {
+                method: "GET",
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Add new offers
+                const offersContainer = document.getElementById('special-offers-list');
+                data.offers.forEach(offer => {
+                    const offerElement = document.createElement("div");
+                    offerElement.classList.add('special-offer-container');
+                    offerElement.innerHTML = `
+                        <p><strong>Offer Text:</strong> ${offer.offer_text}</p>
+                        <p><strong>Number of Passengers:</strong> ${offer.number_of_passengers}</p>
+                        <p><strong>Worker:</strong> ${offer.worker_name}</p>
+                        <button onclick="goToCheckout(${offer.random_flight_id}, ${offer.number_of_passengers})">
+                            Book Now
+                        </button>
+                    `; 
+                    offersContainer.appendChild(offerElement);
+                });
+
+                // If there is another offer, we update the index
+                if (data.next_start_index !== null) {
+                    currentStartIndex = data.next_start_index;
+                } else {
+                    noMoreData = true;
+                }
+
+                loading = false;
+
+                checkNeedMoreOffers();
+            })
+            .catch(error => {
+                console.error("Error fetching offers:", error);
+                loading = false;
+            });
+        }
+
+        // Monitor scrolling
+        window.addEventListener("scroll", () => {
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const pageHeight = document.body.offsetHeight;
+
+            // If they scroll to the bottom of the page
+            if (scrollPosition >= pageHeight - 100) {
+                loadSpecialOffers(currentStartIndex); 
+            }
+        });
+
+        // Load initial offers
+        loadSpecialOffers(currentStartIndex);
+    </script>
+
+    <!-- Stylesheet setting -->
+    <link rel="stylesheet" href="{% static 'users/css/special_offers.css' %}">
+{% endblock %}

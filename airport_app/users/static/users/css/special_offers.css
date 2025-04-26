@@ -1,0 +1,64 @@
+/* Special offer container */
+.special-offer-container {
+    width: 500px;
+    margin: 50px auto;
+    padding: 20px 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.special-offer-container p {
+    font-size: 1.05rem;
+    margin: 10px 0;
+}
+
+.special-offer-container strong {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #d9534f;
+    color: white;
+    cursor: pointer;
+    border: none;
+    margin-top: 15px;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+/* Hover */
+.special-offer-container:hover {
+    transform: scale(1.01);
+    transition: 0.2s ease;
+    border-color: #d9534f;
+    box-shadow: 0 2 20px rgba(217, 83, 79, 0.5);
+}
+
+button:hover {
+    background-color: #cc4c48;
+}
+
+/* Responsive settings */
+@media (max-width: 599px) {
+    .special-offer-container {
+        width: 310px;
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .special-offer-container p {
+        font-size: 0.9rem;
+    }
+
+    button {
+        padding: 8px;
+        border-radius: 3px;
+    }
+}
