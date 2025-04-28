@@ -82,10 +82,10 @@ WSGI_APPLICATION = 'airport_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Airport_database',
-        'USER': 'peter_coder',
-        'PASSWORD': '@HarmonHealth',
-        'HOST': 'db',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),
         'PORT': '5432',
         'OPTIONS': {
             'client_encoding': 'UTF8',  

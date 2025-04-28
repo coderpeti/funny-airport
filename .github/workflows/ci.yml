@@ -21,7 +21,7 @@ jobs:
         env:
           POSTGRES_DB: Airport_database
           POSTGRES_USER: peter_coder
-          POSTGRES_PASSWORD: "@HarmonHealth"
+          POSTGRES_PASSWORD: "${{ secrets.POSTGRES_PASSWORD }}"
         ports:
           - 5432:5432
         # Check if the database is actually started
