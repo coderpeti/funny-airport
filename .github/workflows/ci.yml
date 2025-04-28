@@ -36,7 +36,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Start Docker compose
+      # Create .env file
+      - name: Create .env file
+        run: |
+          echo "POSTGRES_USER=peter_coder" >> airport_app/.env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> airport_app/.env
+          echo "POSTGRES_DB=Airport_database" >> airport_app/.env
+
+      # Set up docker compose
       - name: Set up Docker Compose
         run: |
           docker compose -f airport_app/docker-compose.yml up -d --build
