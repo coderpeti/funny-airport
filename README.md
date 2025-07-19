@@ -74,10 +74,6 @@ The application will be available at:
 
 http://localhost:8000
 
-## Disclaimer
-
-This project is intended for development and learning purposes. Secrets like the Django SECRET_KEY and database passwords are hardcoded for simplicity. For production, environment variables must be used.
-
 ## License
 
 This project is open-source and available under the MIT License.
