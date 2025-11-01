@@ -48,6 +48,13 @@ jobs:
       - name: Set up Docker Compose
         run: |
           docker compose -f airport_app/docker-compose.yml up -d --build
+      
+      # Why the database won't start.
+      - name: Check Docker Compose services
+        run: |
+          echo "Checking if Docker Compose started correctly..."
+          docker compose -f airport_app/docker-compose.yml ps
+          docker compose -f airport_app/docker-compose.yml logs db || tru
 
       # We wait 10 seconds to be ready for the test
       - name: Wait for services to be ready
