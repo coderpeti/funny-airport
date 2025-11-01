@@ -13,23 +13,23 @@ jobs:
   docker_test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        # We will use the latest version of postgres sql
-        image: postgres:latest
-        # Set the environment variables needed to start db
-        env:
-          POSTGRES_DB: Airport_database
-          POSTGRES_USER: peter_coder
-          POSTGRES_PASSWORD: "${{ secrets.POSTGRES_PASSWORD }}"
-        ports:
-          - 5432:5432
-        # Check if the database is actually started
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+#    services:
+#      postgres:
+#        # We will use the latest version of postgres sql
+#        image: postgres:latest
+#        # Set the environment variables needed to start db
+#        env:
+#          POSTGRES_DB: Airport_database
+#          POSTGRES_USER: peter_coder
+#          POSTGRES_PASSWORD: "${{ secrets.POSTGRES_PASSWORD }}"
+#        ports:
+#          - 5432:5432
+#        # Check if the database is actually started
+#        options: >-
+#          --health-cmd="pg_isready"
+#          --health-interval=10s
+#          --health-timeout=5s
+#          --health-retries=5
 
     steps:
       # Uploading the code to GitHub Actions
@@ -42,6 +42,7 @@ jobs:
           echo "POSTGRES_USER=peter_coder" >> airport_app/.env
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> airport_app/.env
           echo "POSTGRES_DB=Airport_database" >> airport_app/.env
+          echo "POSTGRES_HOST=db" >> airport_app/.env
 
       # Set up docker compose
       - name: Set up Docker Compose
@@ -50,7 +51,18 @@ jobs:
 
       # We wait 10 seconds to be ready for the test
       - name: Wait for services to be ready
-        run: sleep 10
+        run: |
+          echo "Waiting for database to be ready..."
+          for i in {1..10}; do
+            if docker compose -f airport_app/docker-compose.yml exec -T db pg_isready -U peter_coder; then
+              echo "Database is ready!"
+              exit 0
+            fi
+            echo "Database not ready yet... ($i/10)"
+            sleep 5
+          done
+          echo "Database failed to start in time." >&2
+          exit 1
       
       # Test
       - name: Run tests inside container
@@ -59,6 +71,6 @@ jobs:
 
       # Stop Docker compose
       - name: Shut down Docker Compose
-        run: |
-          docker compose -f airport_app/docker-compose.yml down
+        if: always()
+        run: docker compose -f airport_app/docker-compose.yml down
         
